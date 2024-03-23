@@ -25,3 +25,7 @@ export interface Iuser extends Document {
   generateAccessTokens(): string;
   generateRefreshTokens(): string;
 }
+
+export interface CustomRequest extends Request {
+  user?: Iuser;
+}
