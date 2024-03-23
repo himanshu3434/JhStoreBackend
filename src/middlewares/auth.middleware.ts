@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 
 import { CustomRequest } from "../types/types.js";
-import { apiReponse } from "../utils/apiResponse.js";
+import { apiResponse } from "../utils/apiResponse.js";
 export const verifyJWT = async (
   req: CustomRequest,
   res: Response,
@@ -15,7 +15,7 @@ export const verifyJWT = async (
     req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token)
-    res.status(404).json(new apiReponse(false, 404, null, "Token Not Found"));
+    res.status(404).json(new apiResponse(false, 404, null, "Token Not Found"));
 
   const decodedToken = jwt.verify(
     token,

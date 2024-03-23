@@ -1,4 +1,4 @@
-class apiReponse {
+class apiResponse {
   constructor(
     public success: boolean,
     public statusCode: number,
@@ -12,4 +12,4 @@ class apiReponse {
   }
 }
 
-export { apiReponse };
+export { apiResponse };

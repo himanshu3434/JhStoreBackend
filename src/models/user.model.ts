@@ -5,35 +5,29 @@ import { Iuser } from "../types/types.js";
 
 const UserSchema = new Schema(
   {
-    _id: {
-      type: String,
-      require: [true, "id is required"],
-      unique: [true, " Id already exist"],
-    },
     fullName: {
       type: String,
       trim: true,
-      require: [true, "Full Name is Required"],
+      required: [true, "Full Name is Required"],
     },
     email: {
       type: String,
-      require: [true, "Email Address is Required"],
+      required: [true, "Email Address is Required"],
       unique: [true, "This Email Address Already Exist"],
     },
     role: {
       type: String,
       enum: ["admin", "user"],
-      require: [true, "Role is Required"],
       default: "user",
     },
     gender: {
       type: String,
       enum: ["Male", "Female", "Other"],
-      require: [true, "Gender is Required"],
+      required: [true, "Gender is Required"],
     },
     password: {
       type: String,
-      require: [true, "Password is Required"],
+      required: [true, "Password is Required"],
     },
     address: {
       type: String,
@@ -50,6 +44,10 @@ const UserSchema = new Schema(
     },
     state: {
       type: String,
+    },
+    dob: {
+      type: Date,
+      required: [true, "Date Of Birthday is Required"],
     },
     refreshToken: {
       type: String,
@@ -70,8 +68,8 @@ UserSchema.pre("save", async function (next) {
 });
 //it is to check the password provide is correct or not
 UserSchema.methods.isPasswordCorrect = async function (password: string) {
-  return await bcrypt.compare(password, this.password);
-
+  const passwordCheck = await bcrypt.compare(password, this.password);
+  return passwordCheck;
   //return response;
 };
 
@@ -88,5 +86,15 @@ UserSchema.methods.generateRefreshTokens = function () {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
   });
 };
-
+UserSchema.virtual("age").get(function () {
+  const today = new Date();
+  const dob = this.dob as Date;
+  let age = today.getFullYear() - dob.getFullYear();
+  if (
+    today.getMonth() < dob.getMonth() ||
+    (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())
+  )
+    age--;
+  return age;
+});
 export const User = mongoose.model<Iuser>("User", UserSchema);

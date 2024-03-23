@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Types } from "mongoose";
 
 export type ControllerType = (
   req: Request,
@@ -7,7 +8,7 @@ export type ControllerType = (
 ) => Promise<void | Response<any, Record<string, any>>>;
 
 export interface Iuser extends Document {
-  _id: string;
+  _id: Types.ObjectId;
   fullName: string;
   email: string;
   role: string;
@@ -18,12 +19,14 @@ export interface Iuser extends Document {
   pincode?: string;
   country?: string;
   state?: string;
+  dob: Date;
   refreshToken?: string;
   createdAt: Date;
   updatedAt: Date;
   isPasswordCorrect(password: string): boolean;
   generateAccessTokens(): string;
   generateRefreshTokens(): string;
+  age: number;
 }
 
 export interface CustomRequest extends Request {
