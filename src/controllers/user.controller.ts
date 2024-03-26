@@ -2,6 +2,7 @@ import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
 import { Types } from "mongoose";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const generateAccessAndRefreshTokesn = async (userId: Types.ObjectId) => {
   const user = await User.findById(userId);
@@ -119,7 +120,49 @@ const loginUser = asyncHandler(async (req, res) => {
       )
     );
 });
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+  if (!incomingRefreshToken)
+    return res
+      .status(404)
+      .json(new apiResponse(false, 404, null, "Refresh Token Not Found "));
 
+  const decodedRefreshToken = jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET as string
+  ) as JwtPayload;
+  const user = await User.findById(decodedRefreshToken._id);
+
+  if (!user)
+    return res
+      .status(401)
+      .json(new apiResponse(false, 401, null, "Invalid Refresh Token"));
+  if (incomingRefreshToken !== user.refreshToken)
+    return res
+      .status(401)
+      .json(new apiResponse(false, 401, null, "Refresh Token Used or Expired"));
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokesn(
+    user._id
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new apiResponse(
+        true,
+        200,
+        { accessToken: accessToken, refreshToken: refreshToken },
+        "Tokens Refreshed SuccessFully"
+      )
+    );
+});
 const logoutUser = asyncHandler(async (req, res) => {});
 
 const updatePassword = asyncHandler(async (req, res) => {});
