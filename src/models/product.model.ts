@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { IProduct } from "../types/types.js";
 
 const ProductSchema = new Schema(
   {
@@ -37,4 +38,4 @@ const ProductSchema = new Schema(
   { timestamps: true }
 );
 
-export const Product = mongoose.model("Product", ProductSchema);
+export const Product = mongoose.model<IProduct>("Product", ProductSchema);

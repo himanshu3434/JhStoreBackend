@@ -28,7 +28,19 @@ export interface Iuser extends Document {
   generateRefreshTokens(): string;
   age: number;
 }
-
+export interface IProduct extends Document {
+  _id: Types.ObjectId;
+  name: string;
+  description: string;
+  stock: number;
+  category_id: Types.ObjectId;
+  coverPhoto: string;
+  photo1: string;
+  photo2: string;
+  photo3: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 export interface CustomRequest extends Request {
   user?: Iuser;
 }
