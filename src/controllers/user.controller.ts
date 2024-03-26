@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
 import { Types } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { CustomRequest } from "../types/types.js";
 
 const generateAccessAndRefreshTokesn = async (userId: Types.ObjectId) => {
   const user = await User.findById(userId);
@@ -163,7 +164,44 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       )
     );
 });
-const logoutUser = asyncHandler(async (req, res) => {});
+const logoutUser = asyncHandler(async (req: CustomRequest, res) => {
+  const user = req.user;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    user?._id,
+    {
+      $unset: {
+        refreshToken: 1,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(
+      new apiResponse(
+        true,
+        200,
+        { loggedOut: true },
+        "User logged Out SuccessFully"
+      )
+    );
+});
+const getCurrentUser = asyncHandler(async (req: CustomRequest, res) => {
+  res
+    .status(200)
+    .json(new apiResponse(true, 200, { user: req.user }, "User Data"));
+});
 
 const updatePassword = asyncHandler(async (req, res) => {});
 
