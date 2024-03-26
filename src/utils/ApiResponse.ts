@@ -6,7 +6,7 @@ class apiResponse {
     public message = "Default message"
   ) {
     this.statusCode = statusCode;
-    this.success = statusCode < 400;
+
     this.data = data;
     this.message = message;
   }

@@ -120,4 +120,19 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
+const logoutUser = asyncHandler(async (req, res) => {});
+
+const updatePassword = asyncHandler(async (req, res) => {});
+
+const updateEmail = asyncHandler(async (req, res) => {});
+
+const updateNumber = asyncHandler(async (req, res) => {});
+
+const updateAddress = asyncHandler(async (req, res) => {});
+
+const updateDob = asyncHandler(async (req, res) => {});
+const updateName = asyncHandler(async (req, res) => {});
+const updateGender = asyncHandler(async (req, res) => {});
+//accessed only by admin
+const updateRole = asyncHandler(async (req, res) => {});
 export { registerUser, loginUser };
