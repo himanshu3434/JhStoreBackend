@@ -3,6 +3,7 @@ import {
   deleteUser,
   getCurrentUser,
   loginUser,
+  logoutUser,
   refreshAccessToken,
   registerUser,
   updateAddress,
@@ -23,7 +24,7 @@ userRouter.post("/registerUser", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.post("/refreshAccessToken", verifyJWT, refreshAccessToken);
 userRouter.get("/getCurrentUser", verifyJWT, getCurrentUser);
-
+userRouter.post("/logout", verifyJWT, logoutUser);
 userRouter.post("/updateEmail", verifyJWT, updateEmail);
 userRouter.post("/updatePassword", verifyJWT, updatePassword);
 userRouter.post("/updateNumber", verifyJWT, updateNumber);
@@ -31,7 +32,7 @@ userRouter.post("/updateAddress", verifyJWT, updateAddress);
 userRouter.post("/updateDob", verifyJWT, updateDob);
 userRouter.post("/updateName", verifyJWT, updateName);
 userRouter.post("/updateGender", verifyJWT, updateGender);
-userRouter.post("/deleteUser", verifyJWT, deleteUser);
+userRouter.post("/delete", verifyJWT, deleteUser);
 userRouter.post("/updateRole", verifyJWT, verifyAdmin, updateRole);
 
 export { userRouter };

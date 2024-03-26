@@ -8,7 +8,7 @@ export const verifyAdmin = asyncHandler(
     if (user?.role === "admin") {
       next();
     }
-
+    else
     return res
       .status(401)
       .json(
