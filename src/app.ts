@@ -11,6 +11,9 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 console.log(process.env.PORT);
 import { userRouter } from "./routes/user.routes.js";
-
+import { productRouter } from "./routes/product.routes.js";
+// import { fakeProduct } from "./utils/fakeData.js";
+//fakeProduct(50).then(() => console.log("dataadded"));
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/product", productRouter);
 export { app };

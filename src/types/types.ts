@@ -44,3 +44,16 @@ export interface IProduct extends Document {
 export interface CustomRequest extends Request {
   user?: Iuser;
 }
+
+export interface baseQuery {
+  name?: {
+    $regex: string;
+    $options: string;
+  };
+  price?: {
+    $lte: number;
+  };
+  category?: {
+    category: string;
+  };
+}
