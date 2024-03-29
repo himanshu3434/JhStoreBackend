@@ -14,8 +14,12 @@ const ProductSchema = new Schema(
     },
     stock: {
       type: Number,
-      require: [true, "Stock is Required"],
+      required: [true, "Stock is Required"],
       default: 0,
+    },
+    price: {
+      type: Number,
+      required: [true, "Price of Product is Required"],
     },
     category_id: {
       type: Schema.Types.ObjectId,
@@ -23,7 +27,7 @@ const ProductSchema = new Schema(
     },
     coverPhoto: {
       type: String,
-      require: [true, "Cover Photo is required"],
+      required: [true, "Cover Photo is required"],
     },
     photo1: {
       type: String,

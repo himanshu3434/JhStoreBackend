@@ -33,6 +33,7 @@ export interface IProduct extends Document {
   name: string;
   description: string;
   stock: number;
+  price: number;
   category_id: Types.ObjectId;
   coverPhoto: string;
   photo1: string;
@@ -43,6 +44,11 @@ export interface IProduct extends Document {
 }
 export interface CustomRequest extends Request {
   user?: Iuser;
+}
+export interface deletePhotoRequest extends Request {
+  statusCodeLocal?: number;
+  errorMessage?: string;
+  success?: boolean;
 }
 
 export interface baseQuery {
@@ -57,3 +63,5 @@ export interface baseQuery {
     category: string;
   };
 }
+
+export type filesMulter = { [fieldname: string]: Express.Multer.File[] };
