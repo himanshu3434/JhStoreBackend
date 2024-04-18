@@ -12,6 +12,11 @@ const OrderSchema = new Schema(
       enum: ["Processing", "Packed", "Shipped", "Delivered"],
       default: "Processing",
     },
+    paymentMode: {
+      type: String,
+      enum: ["Cod", "Card"],
+      required: [true, "Mode of Payment is required"],
+    },
     user_id: {
       type: Schema.Types.ObjectId,
       ref: "User",
