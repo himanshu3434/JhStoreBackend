@@ -71,7 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .status(201)
     .json(new apiResponse(true, 200, newUser, "User Registered Successfully"));
 });
-
+//#:TODO create only one controller for this
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 

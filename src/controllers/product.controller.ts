@@ -3,7 +3,7 @@ import { Product } from "../models/product.model.js";
 import { baseQuery, deletePhotoRequest, filesMulter } from "../types/types.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { fileUploadHandler } from "../utils/fileUpload.js";
+import { fileDeleteHandler, fileUploadHandler } from "../utils/fileUpload.js";
 
 const getAllProducts = asyncHandler(async (req, res) => {
   const limit = Number(process.env.PAGE_LIMIT);
@@ -235,11 +235,88 @@ const updateProductdetail = asyncHandler(async (req, res) => {
     );
 });
 
-const updateProductCoverPhoto = asyncHandler(async (req, res) => {});
-
 const updateProductPhotos = asyncHandler(async (req, res) => {
-  const { photoNo } = req.body;
+  const { productId } = req.body;
+
+  const photoName = req.params.name;
+  const product = await Product.findById(productId);
+  if (!product)
+    return res
+      .status(404)
+      .json(new apiResponse(false, 404, null, "Product not found"));
+  if (!photoName)
+    return res
+      .status(404)
+      .json(new apiResponse(false, 404, null, "photo name is required"));
+
+  const photo = req.file;
+  if (!photo)
+    return res
+      .status(404)
+      .json(new apiResponse(false, 404, null, "Photo not found"));
+
+  const photoUrl = await fileUploadHandler(photo.path);
+  if (!photoUrl)
+    return res
+      .status(500)
+      .json(
+        new apiResponse(
+          false,
+          500,
+          null,
+          "Internal server error while uploading the photo to the cloud"
+        )
+      );
+  let updatedProduct;
+
+  let previousPhotoUrl;
+  switch (photoName) {
+    case "photo1":
+      previousPhotoUrl = product?.photo1;
+      product.photo1 = photoUrl?.url;
+      break;
+    case "photo2":
+      previousPhotoUrl = product?.photo2;
+      product.photo2 = photoUrl?.url;
+
+      break;
+    case "photo3":
+      previousPhotoUrl = product?.photo3;
+      product.photo3 = photoUrl?.url;
+
+      break;
+    case "coverPhoto":
+      previousPhotoUrl = product?.coverPhoto;
+      product.coverPhoto = photoUrl?.url;
+
+      break;
+    default:
+      return res
+        .status(401)
+        .json(new apiResponse(false, 401, null, "invalid Photo Name"));
+  }
+
+  const response = await fileDeleteHandler(previousPhotoUrl);
+  //  console.log("delete response ", response);
+  if (!response || response.result != "ok")
+    return res
+      .status(500)
+      .json(
+        new apiResponse(
+          false,
+          500,
+          null,
+          "Internal server error while deleting the previous photo from the cloud"
+        )
+      );
+
+  await product.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(new apiResponse(true, 200, product, "Photo updated SuccessFully"));
 });
+//this require a flag variable not really deleting product
 const deleteProduct = asyncHandler(async (req, res) => {});
 
 export {
@@ -248,4 +325,5 @@ export {
   getProductsWithFilter,
   createProduct,
   updateProductdetail,
+  updateProductPhotos,
 };

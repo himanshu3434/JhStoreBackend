@@ -24,5 +24,21 @@ const fileUploadHandler = async (localFilePath: string) => {
     console.log("Error while uploading the file to Server", error);
   }
 };
-
-export { fileUploadHandler };
+const fileDeleteHandler = async (publicId: string) => {
+  try {
+    const slashIndex = publicId.lastIndexOf("/");
+    const dotIndex = publicId.lastIndexOf(".");
+    const publicIdWithoutExtension = publicId.substring(
+      slashIndex + 1,
+      dotIndex
+    );
+    // console.log(publicIdWithoutExtension, "     WITH extension ", publicId);
+    const response = await cloudinary.uploader.destroy(
+      publicIdWithoutExtension
+    );
+    return response;
+  } catch (error) {
+    console.log("Error while deleting the Photo from Cloudinary ", error);
+  }
+};
+export { fileUploadHandler, fileDeleteHandler };

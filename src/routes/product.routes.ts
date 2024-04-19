@@ -4,9 +4,10 @@ import {
   getAllProducts,
   getProduct,
   getProductsWithFilter,
+  updateProductPhotos,
   updateProductdetail,
 } from "../controllers/product.controller.js";
-import { upload } from "../middlewares/multer.middleware.js";
+import { singleUpload, upload } from "../middlewares/multer.middleware.js";
 import { unlinkPhoto } from "../middlewares/unlinkLocalPhoto.middleware.js";
 
 const productRouter = Router();
@@ -26,7 +27,10 @@ productRouter.post(
   createProduct,
   unlinkPhoto
 );
-
+//adming routes
+//#: TODO add admin middleware after creating frontend
 productRouter.post("/update/:id", updateProductdetail);
+
+productRouter.post("/update/photo/:name", singleUpload, updateProductPhotos);
 
 export { productRouter };
