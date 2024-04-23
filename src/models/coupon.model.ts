@@ -5,6 +5,7 @@ const CouponSchema = new Schema(
     name: {
       type: String,
       required: [true, "Coupon name is required"],
+      unique: true,
     },
   },
   { timestamps: true }
