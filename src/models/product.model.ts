@@ -21,9 +21,9 @@ const ProductSchema = new Schema(
       type: Number,
       required: [true, "Price of Product is Required"],
     },
-    category_id: {
-      type: Schema.Types.ObjectId,
-      ref: "Category",
+    categoryName: {
+      type: String,
+      required: [true, "Category Name is Required"],
     },
     coverPhoto: {
       type: String,

@@ -96,12 +96,12 @@ const getProductsWithFilter = asyncHandler(async (req, res) => {
 //admin only routes
 const createProduct = asyncHandler(
   async (req: deletePhotoRequest, res, next) => {
-    const { name, description, stock, price, category_id } = req.body;
+    const { name, description, stock, price, categoryName } = req.body;
 
     //check if any field is empty
 
     if (
-      [name, description, stock, price, category_id].some(
+      [name, description, stock, price, categoryName].some(
         (field) => field?.trim() === ""
       )
     ) {
@@ -183,7 +183,7 @@ const createProduct = asyncHandler(
       description,
       stock,
       price,
-      category_id,
+      categoryName,
       coverPhoto: coverPhoto.url,
       photo1: photo1?.url || "",
       photo2: photo2?.url || "",
