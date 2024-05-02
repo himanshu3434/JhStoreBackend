@@ -121,11 +121,11 @@ const createProduct = asyncHandler(
       next();
       return;
     }
-
-    //console.log("here 1", req.files);
+    console.log("body ", req.body);
+    console.log("here 1", req.files);
     const localFilePathCoverPhoto = (req.files as filesMulter)?.coverPhoto[0]
       ?.path;
-    // console.log("here 2");
+    console.log("cover photo ", localFilePathCoverPhoto);
     if (!localFilePathCoverPhoto)
       return res
         .status(404)
