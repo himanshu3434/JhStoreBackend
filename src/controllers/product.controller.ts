@@ -45,7 +45,8 @@ const getProduct = asyncHandler(async (req, res) => {
 //category filter is not checked yet check after creating frontend
 const getProductsWithFilter = asyncHandler(async (req, res) => {
   console.log("here");
-  const { search, price, sort, category } = req.body;
+  const { search, minPrice, maxPrice, sort, category, review } = req.body;
+  console.log("body  ", req.body);
   const page = Number(req.params.page);
   const baseQuery: baseQuery = {};
   const limit = Number(process.env.PAGE_LIMIT);
@@ -57,16 +58,14 @@ const getProductsWithFilter = asyncHandler(async (req, res) => {
       $options: "i",
     };
 
-  if (price)
+  if (minPrice && maxPrice)
     baseQuery.price = {
-      $lte: Number(price),
+      $gte: Number(minPrice),
+      $lte: Number(maxPrice),
     };
   //Category Filter  Is Not Checked
   if (category) {
-    const categoryData = await Category.findById(category);
-    baseQuery.category = {
-      category: categoryData?.name as string,
-    };
+    baseQuery.categoryName = category;
   }
 
   const productPromise = Product.find(baseQuery)
@@ -81,14 +80,17 @@ const getProductsWithFilter = asyncHandler(async (req, res) => {
   ]);
 
   const totalPageNumber = Math.ceil(totalProductList.length / limit);
-
+  const reviewData = {
+    reviewNumber: 0,
+    reviewAverageRating: 0,
+  };
   return res
     .status(200)
     .json(
       new apiResponse(
         true,
         200,
-        { limitedProductList, totalPageNumber },
+        { limitedProductList, totalPageNumber, reviewData },
         "List of Product Fetched SuccessFully"
       )
     );
@@ -121,11 +123,11 @@ const createProduct = asyncHandler(
       next();
       return;
     }
-    console.log("body ", req.body);
-    console.log("here 1", req.files);
+    // console.log("body ", req.body);
+    //console.log("here 1", req.files);
     const localFilePathCoverPhoto = (req.files as filesMulter)?.coverPhoto[0]
       ?.path;
-    console.log("cover photo ", localFilePathCoverPhoto);
+    //console.log("cover photo ", localFilePathCoverPhoto);
     if (!localFilePathCoverPhoto)
       return res
         .status(404)
@@ -212,7 +214,7 @@ const createProduct = asyncHandler(
 
 const updateProductdetail = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const { name, stock, price, description, category_id } = req.body;
+  const { name, stock, price, description, categoryName } = req.body;
   const product = await Product.findById(id);
 
   if (!product)
@@ -224,7 +226,7 @@ const updateProductdetail = asyncHandler(async (req, res) => {
   if (description) product.description = description;
   if (stock) product.stock = stock;
   if (price) product.price = price;
-  if (category_id) product.category_id = category_id;
+  if (categoryName) product.categoryName = categoryName;
 
   await product.save({ validateBeforeSave: false });
 

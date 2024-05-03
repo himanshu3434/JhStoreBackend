@@ -34,7 +34,7 @@ export interface IProduct extends Document {
   description: string;
   stock: number;
   price: number;
-  category_id: Types.ObjectId;
+  categoryName: string;
   coverPhoto: string;
   photo1: string;
   photo2: string;
@@ -57,11 +57,10 @@ export interface baseQuery {
     $options: string;
   };
   price?: {
+    $gte: number;
     $lte: number;
   };
-  category?: {
-    category: string;
-  };
+  categoryName?: string;
 }
 
 export type filesMulter = { [fieldname: string]: Express.Multer.File[] };
