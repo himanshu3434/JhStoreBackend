@@ -64,3 +64,9 @@ export interface baseQuery {
 }
 
 export type filesMulter = { [fieldname: string]: Express.Multer.File[] };
+
+export interface ICart extends Document {
+  product_id: Types.ObjectId;
+  user_id: Types.ObjectId;
+  quantity: number;
+}
