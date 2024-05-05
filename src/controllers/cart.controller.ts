@@ -117,9 +117,7 @@ const getCartItems = asyncHandler(async (req: Request, res: Response) => {
       )
     );
 });
-const deleteItemFromCart = asyncHandler(async (req, res) => {
-  const { product_id, quantity } = req.body;
-});
+
 const deleteAllItemsFromCart = asyncHandler(async (req, res) => {});
 
 //for adding all items a once

@@ -44,14 +44,14 @@ const getProduct = asyncHandler(async (req, res) => {
 });
 //category filter is not checked yet check after creating frontend
 const getProductsWithFilter = asyncHandler(async (req, res) => {
-  console.log("here");
+  //console.log("here");
   const { search, minPrice, maxPrice, sort, category, review } = req.body;
-  console.log("body  ", req.body);
+  // console.log("body  ", req.body);
   const page = Number(req.params.page);
   const baseQuery: baseQuery = {};
   const limit = Number(process.env.PAGE_LIMIT);
   const skipSize = (page - 1) * limit;
-  console.log("search  ", search);
+  // console.log("search  ", search);
   if (search)
     baseQuery.name = {
       $regex: search,
