@@ -242,238 +242,6 @@ const updatePassword = asyncHandler(async (req: CustomRequest, res) => {
     .json(new apiResponse(true, 200, {}, "Password Changed SuccessFully"));
 });
 
-const updateEmail = asyncHandler(async (req: CustomRequest, res) => {
-  const { email } = req.body;
-  if (!email)
-    return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "New Email Address is Required"));
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user?._id,
-    {
-      $set: {
-        email,
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("-password -refreshToken");
-
-  if (!updatedUser)
-    return res
-      .status(500)
-      .json(
-        new apiResponse(
-          false,
-          500,
-          null,
-          "Internal Server Error while Updating the user email to database"
-        )
-      );
-
-  return res
-    .status(200)
-    .json(
-      new apiResponse(true, 200, updatedUser, "Email Updated SuccessFully")
-    );
-});
-
-const updateNumber = asyncHandler(async (req: CustomRequest, res) => {
-  const { mobileNumber } = req.body;
-  if (!mobileNumber)
-    return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "New Mobile Number is Required"));
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user?._id,
-    {
-      $set: {
-        mobileNumber,
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("-password -refreshToken");
-
-  if (!updatedUser)
-    return res
-      .status(500)
-      .json(
-        new apiResponse(
-          false,
-          500,
-          null,
-          "Internal Server Error while Updating the user mobile number to database"
-        )
-      );
-
-  return res
-    .status(200)
-    .json(
-      new apiResponse(
-        true,
-        200,
-        updatedUser,
-        "Mobile Number  Updated SuccessFully"
-      )
-    );
-});
-
-const updateAddress = asyncHandler(async (req: CustomRequest, res) => {
-  const { address, pincode, country, state } = req.body;
-  if ([address, pincode, country, state].some((field) => field.trim() === "")) {
-    return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "All Fields Must Be Field"));
-  }
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user?._id,
-    {
-      $set: {
-        address,
-        pincode,
-        country,
-        state,
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("-password -refreshToken");
-
-  if (!updatedUser)
-    return res
-      .status(500)
-      .json(
-        new apiResponse(
-          false,
-          500,
-          null,
-          "Internal Server Error while Updating the user address to database"
-        )
-      );
-
-  return res
-    .status(200)
-    .json(
-      new apiResponse(true, 200, updatedUser, "Address  Updated SuccessFully")
-    );
-});
-
-const updateDob = asyncHandler(async (req: CustomRequest, res) => {
-  const { dob } = req.body;
-  if (!dob)
-    return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "Dob is required is Required"));
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user?._id,
-    {
-      $set: {
-        dob,
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("-password -refreshToken");
-
-  if (!updatedUser)
-    return res
-      .status(500)
-      .json(
-        new apiResponse(
-          false,
-          500,
-          null,
-          "Internal Server Error while Updating the user dob to database"
-        )
-      );
-
-  return res
-    .status(200)
-    .json(new apiResponse(true, 200, updatedUser, "DOB Updated SuccessFully"));
-});
-const updateName = asyncHandler(async (req: CustomRequest, res) => {
-  const { fullName } = req.body;
-  if (!fullName)
-    return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "Name  is Required"));
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user?._id,
-    {
-      $set: {
-        fullName,
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("-password -refreshToken");
-
-  if (!updatedUser)
-    return res
-      .status(500)
-      .json(
-        new apiResponse(
-          false,
-          500,
-          null,
-          "Internal Server Error while Updating the user name to database"
-        )
-      );
-
-  return res
-    .status(200)
-    .json(
-      new apiResponse(true, 200, updatedUser, "name  Updated SuccessFully")
-    );
-});
-const updateGender = asyncHandler(async (req: CustomRequest, res) => {
-  const { gender } = req.body;
-  if (!gender)
-    return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "gender is Required"));
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user?._id,
-    {
-      $set: {
-        gender,
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("-password -refreshToken");
-
-  if (!updatedUser)
-    return res
-      .status(500)
-      .json(
-        new apiResponse(
-          false,
-          500,
-          null,
-          "Internal Server Error while Updating the user gender to database"
-        )
-      );
-
-  return res
-    .status(200)
-    .json(
-      new apiResponse(true, 200, updatedUser, "Gender  Updated SuccessFully")
-    );
-});
 const deleteUser = asyncHandler(async (req: CustomRequest, res) => {
   const { password } = req.body;
 
@@ -521,6 +289,71 @@ const deleteUser = asyncHandler(async (req: CustomRequest, res) => {
     .clearCookie("refreshToken", cookieOptions)
     .json(new apiResponse(true, 200, null, "User deleted SuccessFully"));
 });
+
+const updateUserDetails = asyncHandler(async (req: CustomRequest, res) => {
+  const {
+    email,
+    mobileNumber,
+    address,
+    pincode,
+    country,
+    state,
+    dob,
+    fullName,
+    gender,
+  } = req.body;
+  const user = await User.findById(req.user?._id);
+  if (!user)
+    return res
+      .status(404)
+      .json(new apiResponse(false, 404, null, "User Not Found "));
+  if (email && email.trim().length != 0) {
+    user.email = email;
+  }
+
+  if (mobileNumber && mobileNumber.trim().length != 0) {
+    user.mobileNumber = mobileNumber;
+  }
+
+  if (
+    address &&
+    pincode &&
+    country &&
+    state &&
+    [address, pincode, country, state].some((field) => field?.trim() !== "")
+  ) {
+    user.address = address;
+    user.pincode = pincode;
+    user.country = country;
+    user.state = state;
+  }
+
+  if (dob && dob.trim().length != 0) {
+    user.dob = dob;
+  }
+  if (fullName && fullName.trim().length != 0) {
+    user.fullName = fullName;
+  }
+
+  if (gender && gender.trim().length !== 0) {
+    user.gender = gender;
+  }
+
+  const updatedUser = await user.save();
+  updatedUser.password = "";
+  updatedUser.refreshToken = "";
+  return res
+    .status(200)
+    .json(
+      new apiResponse(
+        true,
+        200,
+        updatedUser,
+        "User Details Updated SuccessFully"
+      )
+    );
+});
+
 //accessed only by admin
 const updateRole = asyncHandler(async (req, res) => {
   const { role, userId } = req.body;
@@ -558,6 +391,7 @@ const updateRole = asyncHandler(async (req, res) => {
     .status(200)
     .json(new apiResponse(true, 200, {}, "Role Updated SuccessFully"));
 });
+
 export {
   registerUser,
   loginUser,
@@ -565,12 +399,7 @@ export {
   logoutUser,
   getCurrentUser,
   updatePassword,
-  updateEmail,
-  updateNumber,
-  updateAddress,
-  updateDob,
-  updateName,
-  updateGender,
   deleteUser,
   updateRole,
+  updateUserDetails,
 };
