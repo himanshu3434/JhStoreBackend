@@ -70,3 +70,21 @@ export interface ICart extends Document {
   user_id: Types.ObjectId;
   quantity: number;
 }
+export interface ICartItem extends Document {
+  _id: Types.ObjectId;
+  product_id: Types.ObjectId;
+  user_id: Types.ObjectId;
+  quantity: number;
+  createdAt: Date;
+  updatedAt: Date;
+
+  productDetails: {
+    _id: Types.ObjectId;
+    name: string;
+    stock: number;
+    price: number;
+    categoryName: string;
+    coverPhoto: string;
+  };
+  productTotalPrice: number;
+}
