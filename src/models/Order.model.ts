@@ -27,10 +27,11 @@ const OrderSchema = new Schema(
     },
     shippingCharge: {
       type: Number,
-      required: [true, "Shipping Charge is Required"],
+      default: 0,
     },
-    discountCoupon: {
-      type: Schema.Types.ObjectId,
+    discount: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

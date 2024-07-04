@@ -9,6 +9,6 @@ const couponRouter = Router();
 //admin route add that later
 couponRouter.post("/new", addCoupon);
 couponRouter.post("/delete", deleteCoupon);
-couponRouter.get("/check", getCoupon);
+couponRouter.get("/check/:coupon", getCoupon);
 
 export { couponRouter };

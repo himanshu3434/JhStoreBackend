@@ -3,8 +3,8 @@ import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const getCoupon = asyncHandler(async (req, res) => {
-  const { coupon } = req.body;
-  if (!coupon || coupon.trim().lenght === 0)
+  const { coupon } = req.params;
+  if (!coupon || coupon.trim().length === 0)
     return res
       .status(404)
       .json(new apiResponse(false, 404, null, "Coupon is Required"));
@@ -12,8 +12,8 @@ const getCoupon = asyncHandler(async (req, res) => {
 
   if (!dbCoupon || dbCoupon.length === 0)
     return res
-      .status(404)
-      .json(new apiResponse(true, 404, { valid: false }, "Coupon Not Found"));
+      .status(200)
+      .json(new apiResponse(true, 200, { valid: false }, "Coupon Not Found"));
 
   return res
     .status(200)
