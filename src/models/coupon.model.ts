@@ -7,6 +7,10 @@ const CouponSchema = new Schema(
       required: [true, "Coupon name is required"],
       unique: true,
     },
+    amount: {
+      type: Number,
+      required: [true, "Coupon amount is required"],
+    },
   },
   { timestamps: true }
 );

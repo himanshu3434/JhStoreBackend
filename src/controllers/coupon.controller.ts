@@ -9,20 +9,32 @@ const getCoupon = asyncHandler(async (req, res) => {
       .status(404)
       .json(new apiResponse(false, 404, null, "Coupon is Required"));
   const dbCoupon = await Coupon.find({ name: coupon });
-  // console.log(dbCoupon);
+
   if (!dbCoupon || dbCoupon.length === 0)
     return res
       .status(404)
-      .json(new apiResponse(false, 404, null, "Coupon Not Found"));
+      .json(new apiResponse(true, 404, { valid: false }, "Coupon Not Found"));
 
   return res
     .status(200)
-    .json(new apiResponse(true, 200, null, "Coupon  is Valid"));
+    .json(
+      new apiResponse(
+        true,
+        200,
+        { valid: true, dbCoupon: dbCoupon[0] },
+        "Coupon  is Valid"
+      )
+    );
 });
 //admin controller
 const addCoupon = asyncHandler(async (req, res) => {
-  const { coupon } = req.body;
-
+  const { coupon, amount } = req.body;
+  if (!coupon || !amount)
+    return res
+      .status(404)
+      .json(
+        new apiResponse(false, 404, null, "Coupon name and amount is required")
+      );
   const existingCoupon = await Coupon.find({ name: coupon });
   // console.log(existingCoupon);
   if (existingCoupon && existingCoupon.length !== 0)
@@ -32,6 +44,7 @@ const addCoupon = asyncHandler(async (req, res) => {
 
   const newCoupon = await Coupon.create({
     name: coupon,
+    amount,
   });
   if (!newCoupon)
     return res

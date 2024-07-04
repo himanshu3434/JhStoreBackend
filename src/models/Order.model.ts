@@ -29,8 +29,8 @@ const OrderSchema = new Schema(
       type: Number,
       required: [true, "Shipping Charge is Required"],
     },
-    discount: {
-      type: Number,
+    discountCoupon: {
+      type: Schema.Types.ObjectId,
     },
   },
   { timestamps: true }
