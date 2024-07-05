@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const OrderItemSchema = new Schema(
   {
-    ordre_id: {
+    order_id: {
       type: Schema.Types.ObjectId,
       ref: "Order",
     },

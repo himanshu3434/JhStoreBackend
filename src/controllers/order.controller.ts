@@ -1,5 +1,7 @@
+import { Cart } from "../models/cart.model.js";
 import { Order } from "../models/order.model.js";
 import { OrderItem } from "../models/ordreItem.model.js";
+import { Product } from "../models/product.model.js";
 import { CustomRequest, ICartItem } from "../types/types.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -49,12 +51,20 @@ const createOrder = asyncHandler(async (req: CustomRequest, res) => {
         product_id: cartItem.product_id,
         quantity: cartItem.quantity,
       });
+
+      const product = await Product.findById(cartItem.product_id);
+      if (product) {
+        product.stock -= cartItem.quantity;
+        product.save();
+      }
     } catch (error) {
       console.log("error while creating orderItems", error);
     }
 
     return;
   });
+
+  await Cart.deleteMany({ user_id: req.user?._id });
 
   return res
     .status(201)
