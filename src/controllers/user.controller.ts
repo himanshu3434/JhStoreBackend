@@ -310,8 +310,8 @@ const updateUserDetails = asyncHandler(async (req: CustomRequest, res) => {
   if (email && email.trim().length != 0) {
     user.email = email;
   }
-
-  if (mobileNumber && mobileNumber.trim().length != 0) {
+  // console.log("mobileNumber   ", typeof mobileNumber);
+  if (mobileNumber) {
     user.mobileNumber = mobileNumber;
   }
 
