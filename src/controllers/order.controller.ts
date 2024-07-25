@@ -6,7 +6,15 @@ import { CustomRequest, ICartItem } from "../types/types.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const getAllUserOrders = asyncHandler(async (req: CustomRequest, res) => {});
+const getAllUserOrders = asyncHandler(async (req: CustomRequest, res) => {
+  const orders = await Order.find({ user_id: req.user?._id }).sort({
+    createdAt: -1,
+  });
+
+  return res
+    .status(200)
+    .json(new apiResponse(true, 200, orders, "All  User Orders"));
+});
 const createOrder = asyncHandler(async (req: CustomRequest, res) => {
   const { allCartItems, discount, subTotal, transaction_id, paymentMode } =
     req.body;
@@ -78,4 +86,4 @@ const getAllOrders = asyncHandler(async (req, res) => {});
 
 const updateOrderStatus = asyncHandler(async (req, res) => {});
 
-export { createOrder };
+export { createOrder, getAllUserOrders };
