@@ -13,7 +13,9 @@ export const verifyJWT = asyncHandler(
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token)
-      res.status(404).json(new apiResponse(false, 404, null, "User Not Found"));
+      return res
+        .status(404)
+        .json(new apiResponse(false, 404, null, "User Not Found"));
 
     const decodedToken = jwt.verify(
       token,

@@ -391,7 +391,16 @@ const updateRole = asyncHandler(async (req, res) => {
     .status(200)
     .json(new apiResponse(true, 200, {}, "Role Updated SuccessFully"));
 });
+const getAllUsers = asyncHandler(async (req, res) => {
+  const limit = Number(process.env.PAGE_LIMIT);
+  const page = parseInt(req.params.page);
+  const users = await User.find()
+    .limit(limit)
+    .skip((page - 1) * limit)
+    .select("-password -refreshToken");
 
+  return res.status(200).json(new apiResponse(true, 200, users, "All Users"));
+});
 export {
   registerUser,
   loginUser,
@@ -402,4 +411,5 @@ export {
   deleteUser,
   updateRole,
   updateUserDetails,
+  getAllUsers,
 };
