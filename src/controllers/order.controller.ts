@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Cart } from "../models/cart.model.js";
 import { Order } from "../models/order.model.js";
 import { OrderItem } from "../models/ordreItem.model.js";
@@ -82,8 +83,80 @@ const createOrder = asyncHandler(async (req: CustomRequest, res) => {
 const cancelOrder = asyncHandler(async (req, res) => {});
 
 //admin only
-const getAllOrders = asyncHandler(async (req, res) => {});
+const getAllOrders = asyncHandler(async (req, res) => {
+  const limit = Number(process.env.PAGE_LIMIT);
+  const page = parseInt(req.params.page);
+
+  const OrdersDetails = await Order.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "user_id",
+        foreignField: "_id",
+        as: "userArray",
+        pipeline: [
+          {
+            $project: {
+              fullName: 1,
+            },
+          },
+        ],
+      },
+    },
+
+    {
+      $addFields: {
+        user: { $arrayElemAt: ["$userArray", 0] },
+      },
+    },
+    {
+      $lookup: {
+        from: "orderitems",
+        localField: "_id",
+        foreignField: "order_id",
+        as: "orderItemsArray",
+        pipeline: [
+          {
+            $project: {
+              quantity: 1,
+            },
+          },
+        ],
+      },
+    },
+
+    {
+      $addFields: {
+        user: { $arrayElemAt: ["$userArray", 0] },
+      },
+    },
+    {
+      $addFields: {
+        quantity: { $sum: "$orderItemsArray.quantity" },
+      },
+    },
+    {
+      $addFields: {
+        fullName: "$user.fullName",
+      },
+    },
+
+    {
+      $project: {
+        userArray: 0,
+        orderItemsArray: 0,
+        user: 0,
+      },
+    },
+  ])
+    .limit(limit)
+    .skip((page - 1) * limit);
+
+  return res
+    .status(200)
+    .json(new apiResponse(true, 200, OrdersDetails, "All Orders Details"));
+});
 
 const updateOrderStatus = asyncHandler(async (req, res) => {});
 
-export { createOrder, getAllUserOrders };
+export { createOrder, getAllUserOrders, getAllOrders };
