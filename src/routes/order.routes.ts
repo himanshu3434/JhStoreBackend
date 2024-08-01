@@ -10,6 +10,8 @@ const orderRouter = Router();
 
 orderRouter.post("/create", verifyJWT, createOrder);
 orderRouter.get("/allOrder", verifyJWT, getAllUserOrders);
+//admin routes
+
 orderRouter.get("/allOrderAdmin/:page", getAllOrders);
 
 export { orderRouter };
