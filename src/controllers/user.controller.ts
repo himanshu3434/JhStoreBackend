@@ -398,8 +398,13 @@ const getAllUsers = asyncHandler(async (req, res) => {
     .limit(limit)
     .skip((page - 1) * limit)
     .select("-password -refreshToken");
+  const totalUserLists = await User.find().select("-password -refreshToken");
 
-  return res.status(200).json(new apiResponse(true, 200, users, "All Users"));
+  const totalPageNumber = Math.ceil(totalUserLists.length / limit);
+
+  return res
+    .status(200)
+    .json(new apiResponse(true, 200, { users, totalPageNumber }, "All Users"));
 });
 export {
   registerUser,

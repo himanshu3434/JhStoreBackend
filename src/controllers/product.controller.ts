@@ -11,9 +11,21 @@ const getAllProducts = asyncHandler(async (req, res) => {
   const allProducts = await Product.find()
     .limit(limit)
     .skip((page - 1) * limit);
+
+  const totalProductList = await Product.find();
+
+  const totalPageNumber = Math.ceil(totalProductList.length / limit);
+
   return res
     .status(200)
-    .json(new apiResponse(true, 200, allProducts, "All Products in limit "));
+    .json(
+      new apiResponse(
+        true,
+        200,
+        { allProducts, totalPageNumber },
+        "All Products in limit "
+      )
+    );
 });
 
 const getProduct = asyncHandler(async (req, res) => {
