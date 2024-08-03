@@ -3,29 +3,29 @@ import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const createPaymentIntent = asyncHandler(async (req, res) => {
-  const { amount } = req.body;
-
-  console.log("amount  ", amount);
+  const { amount, userData } = req.body;
+  // console.log("userData  ", userData);
+  // console.log("amount  ", amount);
   if (!amount)
     return res
       .status(404)
       .json(new apiResponse(false, 404, null, "Amount is Required"));
 
   const customer = await stripe.customers.create({
-    name: "Raju Rastogi",
-    email: "example@example.com",
+    name: userData.fullName,
+    email: userData.email,
     address: {
-      city: "kasokaba",
-      country: "japan",
-      line1: "shinchan streeet",
+      city: "NA",
+      country: userData.country,
+      line1: userData.address,
       line2: "",
-      postal_code: "226005",
-      state: "tokyo",
+      postal_code: userData.pincode,
+      state: userData.state,
     },
   });
 
   const paymentIntent = await stripe.paymentIntents.create({
-    description: "lo regulation",
+    description: "Payment of a customer of jhstore ",
     customer: customer.id,
     amount: amount,
     currency: "inr",
