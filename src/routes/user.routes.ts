@@ -28,6 +28,6 @@ userRouter.post("/updateDetails", verifyJWT, updateUserDetails);
 userRouter.post("/delete", verifyJWT, deleteUser);
 //admin routes
 userRouter.post("/updateRole", verifyJWT, verifyAdmin, updateRole);
-userRouter.get("/allUser/:page", getAllUsers);
+userRouter.get("/allUser/:page", verifyJWT, verifyAdmin, getAllUsers);
 
 export { userRouter };
