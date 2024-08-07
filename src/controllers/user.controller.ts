@@ -87,14 +87,14 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!user)
     return res
-      .status(404)
+      .status(200)
       .json(new apiResponse(false, 404, null, "User Not Found"));
 
   const passwordValid = await user.isPasswordCorrect(password);
   // console.log("password ", passwordValid);
   if (!passwordValid)
     return res
-      .status(401)
+      .status(200)
       .json(new apiResponse(false, 401, null, "Unauthorised User"));
   //  console.log(passwordValid);
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokesn(
