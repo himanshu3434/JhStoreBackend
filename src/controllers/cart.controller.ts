@@ -102,6 +102,11 @@ const getCartItems = asyncHandler(async (req: Request, res: Response) => {
       },
     },
   ]);
+
+  const totalQuantity = cartDetails.reduce(
+    (accumulator, cartElement) => accumulator + Number(cartElement.quantity),
+    0
+  );
   const subTotal = cartDetails.reduce(
     (accumulator, cartElement) =>
       accumulator + Number(cartElement.productTotalPrice),
@@ -113,7 +118,7 @@ const getCartItems = asyncHandler(async (req: Request, res: Response) => {
       new apiResponse(
         true,
         200,
-        { cartDetails, subTotal },
+        { cartDetails, subTotal, totalQuantity },
         "Cart Items Fetched SuccessFully"
       )
     );
