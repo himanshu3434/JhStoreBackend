@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { Cart } from "../models/cart.model.js";
 import { Order } from "../models/order.model.js";
 import { OrderItem } from "../models/ordreItem.model.js";
@@ -28,18 +27,6 @@ const createOrder = asyncHandler(async (req: CustomRequest, res) => {
     !transaction_id ||
     !paymentMode
   ) {
-    console.log(
-      " allCartItems",
-      allCartItems,
-      "discount",
-      discount,
-      "subTotal",
-      subTotal,
-      "transaction_id",
-      transaction_id,
-      "paymentMode",
-      paymentMode
-    );
     return res
       .status(400)
       .json(new apiResponse(false, 400, null, "All Field Are Required"));
@@ -231,4 +218,4 @@ const getAllOrders = asyncHandler(async (req, res) => {
 
 const updateOrderStatus = asyncHandler(async (req, res) => {});
 
-export { createOrder, getAllUserOrders, getAllOrders };
+export { createOrder, getAllOrders, getAllUserOrders };

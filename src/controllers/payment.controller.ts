@@ -4,8 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const createPaymentIntent = asyncHandler(async (req, res) => {
   const { amount, userData } = req.body;
-  // console.log("userData  ", userData);
-  // console.log("amount  ", amount);
+
   if (!amount)
     return res
       .status(404)

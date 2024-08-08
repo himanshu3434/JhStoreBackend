@@ -8,7 +8,6 @@ cloudinary.config({
 });
 
 const fileUploadHandler = async (localFilePath: string) => {
-  // console.log(localFilePath);
   try {
     if (!localFilePath) return null;
 
@@ -32,7 +31,7 @@ const fileDeleteHandler = async (publicId: string) => {
       slashIndex + 1,
       dotIndex
     );
-    // console.log(publicIdWithoutExtension, "     WITH extension ", publicId);
+
     const response = await cloudinary.uploader.destroy(
       publicIdWithoutExtension
     );

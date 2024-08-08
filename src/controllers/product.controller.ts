@@ -1,4 +1,3 @@
-import { Category } from "../models/category.model.js";
 import { Product } from "../models/product.model.js";
 import { baseQuery, deletePhotoRequest, filesMulter } from "../types/types.js";
 import { apiResponse } from "../utils/apiResponse.js";
@@ -56,14 +55,13 @@ const getProduct = asyncHandler(async (req, res) => {
 });
 //category filter is not checked yet check after creating frontend
 const getProductsWithFilter = asyncHandler(async (req, res) => {
-  //console.log("here");
   const { search, minPrice, maxPrice, sort, category, review } = req.body;
-  // console.log("body  ", req.body);
+
   const page = Number(req.params.page);
   const baseQuery: baseQuery = {};
   const limit = Number(process.env.PAGE_LIMIT);
   const skipSize = (page - 1) * limit;
-  // console.log("search  ", search);
+
   if (search)
     baseQuery.name = {
       $regex: search,
@@ -135,11 +133,10 @@ const createProduct = asyncHandler(
       next();
       return;
     }
-    // console.log("body ", req.body);
-    //console.log("here 1", req.files);
+
     const localFilePathCoverPhoto = (req.files as filesMulter)?.coverPhoto[0]
       ?.path;
-    //console.log("cover photo ", localFilePathCoverPhoto);
+
     if (!localFilePathCoverPhoto)
       return res
         .status(404)
@@ -311,7 +308,7 @@ const updateProductPhotos = asyncHandler(async (req, res) => {
   }
 
   const response = await fileDeleteHandler(previousPhotoUrl);
-  //  console.log("delete response ", response);
+
   if (!response || response.result != "ok")
     return res
       .status(500)
@@ -334,10 +331,10 @@ const updateProductPhotos = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {});
 
 export {
+  createProduct,
   getAllProducts,
   getProduct,
   getProductsWithFilter,
-  createProduct,
   updateProductdetail,
   updateProductPhotos,
 };

@@ -17,7 +17,7 @@ export const unlinkPhoto = asyncHandler(
     if (localFilePathPhoto2) fs.unlinkSync(localFilePathPhoto2);
     if (localFilePathPhoto3) fs.unlinkSync(localFilePathPhoto3);
     const statusCode = req.statusCodeLocal as number;
-    // console.log(req.statusCodeLocal);
+
     return res
       .status(statusCode)
       .json(new apiResponse(false, statusCode, null, req.errorMessage));

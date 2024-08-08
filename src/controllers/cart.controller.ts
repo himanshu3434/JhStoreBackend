@@ -55,7 +55,7 @@ const getCartItems = asyncHandler(async (req: Request, res: Response) => {
     return res
       .status(200)
       .json(new apiResponse(false, 404, null, "User Id is required"));
-  // console.log("in the cart", user_id);
+
   const cartDetails = await Cart.aggregate([
     {
       $match: {
@@ -125,7 +125,7 @@ const getCartItems = asyncHandler(async (req: Request, res: Response) => {
 });
 const getQuantityCartItem = asyncHandler(async (req, res) => {
   const { user_id, product_id } = req.params;
-  // console.log(user_id, "   ", product_id);
+
   if (!user_id || !product_id)
     return res
       .status(404)

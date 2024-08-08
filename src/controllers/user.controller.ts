@@ -8,7 +8,7 @@ import { cookieOptions } from "../constants.js";
 
 const generateAccessAndRefreshTokesn = async (userId: Types.ObjectId) => {
   const user = await User.findById(userId);
-  //console.log(user);
+
   const accessToken = user?.generateAccessTokens();
   const refreshToken = user?.generateRefreshTokens();
   if (user) {
@@ -91,12 +91,12 @@ const loginUser = asyncHandler(async (req, res) => {
       .json(new apiResponse(false, 404, null, "User Not Found"));
 
   const passwordValid = await user.isPasswordCorrect(password);
-  // console.log("password ", passwordValid);
+
   if (!passwordValid)
     return res
       .status(200)
       .json(new apiResponse(false, 401, null, "Unauthorised User"));
-  //  console.log(passwordValid);
+
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokesn(
     user._id
   );
@@ -310,7 +310,7 @@ const updateUserDetails = asyncHandler(async (req: CustomRequest, res) => {
   if (email && email.trim().length != 0) {
     user.email = email;
   }
-  // console.log("mobileNumber   ", typeof mobileNumber);
+
   if (mobileNumber) {
     user.mobileNumber = mobileNumber;
   }

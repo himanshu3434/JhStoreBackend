@@ -36,7 +36,7 @@ const addCoupon = asyncHandler(async (req, res) => {
         new apiResponse(false, 404, null, "Coupon name and amount is required")
       );
   const existingCoupon = await Coupon.find({ name: coupon });
-  // console.log(existingCoupon);
+
   if (existingCoupon && existingCoupon.length !== 0)
     return res
       .status(409)

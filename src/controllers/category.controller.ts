@@ -1,5 +1,4 @@
 import { Category } from "../models/category.model.js";
-import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -52,4 +51,4 @@ const addCategory = asyncHandler(async (req, res) => {
 //on top after app is completed
 const deleteCategory = asyncHandler(async (req, res) => {});
 
-export { getCategory, addCategory };
+export { addCategory, getCategory };
