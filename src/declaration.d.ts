@@ -1,4 +1,4 @@
-declare module "../utils/apiResponse";
-declare module "../utils/asyncHandler";
-declare module "../models/order.model";
-declare module "../models/orderItem.model";
+declare module "../utils/apiResponse.ts";
+declare module "../utils/asyncHandler.ts";
+declare module "../models/order.model.ts";
+declare module "../models/orderItem.model.ts";
