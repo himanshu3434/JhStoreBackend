@@ -9,7 +9,7 @@ dotenv.config();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://jh-store-client.vercel.app"],
+    origin: ["http://localhost:5173"],
     methods: ["POST", "GET", "PUT", "DELETE"],
 
     credentials: true,

@@ -9,6 +9,6 @@ import { verifyAdmin } from "../middlewares/admin.middleware.js";
 const categoryRouter = Router();
 
 categoryRouter.post("/new", verifyJWT, verifyAdmin, addCategory);
-categoryRouter.get("/get", verifyJWT, verifyAdmin, getCategory);
+categoryRouter.get("/get", getCategory);
 
 export { categoryRouter };
