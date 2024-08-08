@@ -1,8 +1,9 @@
+import { Request, Response } from "express";
 import { Category } from "../models/category.model.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const getCategory = asyncHandler(async (req, res) => {
+const getCategory = asyncHandler(async (req: Request, res: Response) => {
   const categories = await Category.find();
   if (!categories)
     return res
@@ -24,7 +25,7 @@ const getCategory = asyncHandler(async (req, res) => {
     );
 });
 //admin only
-const addCategory = asyncHandler(async (req, res) => {
+const addCategory = asyncHandler(async (req: Request, res: Response) => {
   const { categoryName } = req.body;
   if (!categoryName || categoryName.trim().length === 0)
     return res
@@ -48,7 +49,7 @@ const addCategory = asyncHandler(async (req, res) => {
     );
 });
 
-//on top after app is completed
-const deleteCategory = asyncHandler(async (req, res) => {});
+// //on top after app is completed
+// const deleteCategory = asyncHandler(async (req, res) => {});
 
 export { addCategory, getCategory };

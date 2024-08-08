@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { Cart } from "../models/cart.model.js";
 import { Order } from "../models/order.model.js";
 import { OrderItem } from "../models/ordreItem.model.js";
@@ -6,16 +7,18 @@ import { CustomRequest, ICartItem } from "../types/types.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const getAllUserOrders = asyncHandler(async (req: CustomRequest, res) => {
-  const orders = await Order.find({ user_id: req.user?._id }).sort({
-    createdAt: -1,
-  });
+const getAllUserOrders = asyncHandler(
+  async (req: CustomRequest, res: Response) => {
+    const orders = await Order.find({ user_id: req.user?._id }).sort({
+      createdAt: -1,
+    });
 
-  return res
-    .status(200)
-    .json(new apiResponse(true, 200, orders, "All  User Orders"));
-});
-const createOrder = asyncHandler(async (req: CustomRequest, res) => {
+    return res
+      .status(200)
+      .json(new apiResponse(true, 200, orders, "All  User Orders"));
+  }
+);
+const createOrder = asyncHandler(async (req: CustomRequest, res: Response) => {
   const { allCartItems, discount, subTotal, transaction_id, paymentMode } =
     req.body;
 
@@ -67,10 +70,10 @@ const createOrder = asyncHandler(async (req: CustomRequest, res) => {
     .json(new apiResponse(true, 201, order, "Order Created"));
 });
 
-const cancelOrder = asyncHandler(async (req, res) => {});
+// const cancelOrder = asyncHandler(async (req, res) => {});
 
 //admin only
-const getAllOrders = asyncHandler(async (req, res) => {
+const getAllOrders = asyncHandler(async (req: Request, res: Response) => {
   const limit = Number(process.env.PAGE_LIMIT);
   const page = parseInt(req.params.page);
 
@@ -216,6 +219,6 @@ const getAllOrders = asyncHandler(async (req, res) => {
     );
 });
 
-const updateOrderStatus = asyncHandler(async (req, res) => {});
+// const updateOrderStatus = asyncHandler(async (req, res) => {});
 
 export { createOrder, getAllOrders, getAllUserOrders };

@@ -1,8 +1,9 @@
+import { Request, Response } from "express";
 import { Coupon } from "../models/coupon.model.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const getCoupon = asyncHandler(async (req, res) => {
+const getCoupon = asyncHandler(async (req: Request, res: Response) => {
   const { coupon } = req.params;
   if (!coupon || coupon.trim().length === 0)
     return res
@@ -27,7 +28,7 @@ const getCoupon = asyncHandler(async (req, res) => {
     );
 });
 //admin controller
-const addCoupon = asyncHandler(async (req, res) => {
+const addCoupon = asyncHandler(async (req: Request, res: Response) => {
   const { coupon, amount } = req.body;
   if (!coupon || !amount)
     return res
@@ -63,7 +64,7 @@ const addCoupon = asyncHandler(async (req, res) => {
     .json(new apiResponse(true, 200, newCoupon, "Coupon created SuccessFully"));
 });
 
-const deleteCoupon = asyncHandler(async (req, res) => {
+const deleteCoupon = asyncHandler(async (req: Request, res: Response) => {
   const { coupon } = req.body;
 
   if (!coupon)

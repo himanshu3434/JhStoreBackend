@@ -123,43 +123,45 @@ const getCartItems = asyncHandler(async (req: Request, res: Response) => {
       )
     );
 });
-const getQuantityCartItem = asyncHandler(async (req, res) => {
-  const { user_id, product_id } = req.params;
+const getQuantityCartItem = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { user_id, product_id } = req.params;
 
-  if (!user_id || !product_id)
+    if (!user_id || !product_id)
+      return res
+        .status(404)
+        .json(new apiResponse(false, 404, null, "all field chaihiya"));
+    // return res.status(404).json(new apiResponse(false, 404, null, ""));
+    const quantityResponse = await Cart.find({
+      user_id: user_id,
+      product_id: product_id,
+    });
+    if (quantityResponse.length === 0)
+      return res
+        .status(404)
+        .json(
+          new apiResponse(
+            false,
+            404,
+            null,
+            "Zero Quantity Exist in Cart for the Specified data "
+          )
+        );
     return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "all field chaihiya"));
-  // return res.status(404).json(new apiResponse(false, 404, null, ""));
-  const quantityResponse = await Cart.find({
-    user_id: user_id,
-    product_id: product_id,
-  });
-  if (quantityResponse.length === 0)
-    return res
-      .status(404)
+      .status(200)
       .json(
         new apiResponse(
-          false,
-          404,
-          null,
-          "Zero Quantity Exist in Cart for the Specified data "
+          true,
+          200,
+          quantityResponse[0].quantity,
+          "Quantity Fetched SuccessFully"
         )
       );
-  return res
-    .status(200)
-    .json(
-      new apiResponse(
-        true,
-        200,
-        quantityResponse[0].quantity,
-        "Quantity Fetched SuccessFully"
-      )
-    );
-});
-const deleteAllItemsFromCart = asyncHandler(async (req, res) => {});
+  }
+);
+// const deleteAllItemsFromCart = asyncHandler(async (req, res) => {});
 
-//for adding all items a once
-const addListOfItemsToCart = asyncHandler(async (req, res) => {});
+// //for adding all items a once
+// const addListOfItemsToCart = asyncHandler(async (req, res) => {});
 
 export { cudItemToCart, getCartItems, getQuantityCartItem };

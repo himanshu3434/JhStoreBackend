@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { CustomRequest, Iuser } from "../types/types.js";
 import { cookieOptions } from "../constants.js";
+import { Request, Response } from "express";
 
 const generateAccessAndRefreshTokesn = async (userId: Types.ObjectId) => {
   const user = await User.findById(userId);
@@ -19,7 +20,7 @@ const generateAccessAndRefreshTokesn = async (userId: Types.ObjectId) => {
   return { accessToken, refreshToken };
 };
 
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req: Request, res: Response) => {
   const { fullName, email, password, gender, dob } = req.body;
 
   //check if any field is empty
@@ -72,7 +73,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new apiResponse(true, 200, newUser, "User Registered Successfully"));
 });
 //#:TODO create only one controller for this
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || [password].some((field) => field.trim() === "")) {
@@ -117,7 +118,7 @@ const loginUser = asyncHandler(async (req, res) => {
       )
     );
 });
-const refreshAccessToken = asyncHandler(async (req, res) => {
+const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
   if (!incomingRefreshToken)
@@ -157,7 +158,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       )
     );
 });
-const logoutUser = asyncHandler(async (req: CustomRequest, res) => {
+const logoutUser = asyncHandler(async (req: CustomRequest, res: Response) => {
   const user = req.user;
 
   const updatedUser = await User.findByIdAndUpdate(
@@ -185,64 +186,70 @@ const logoutUser = asyncHandler(async (req: CustomRequest, res) => {
       )
     );
 });
-const getCurrentUser = asyncHandler(async (req: CustomRequest, res) => {
-  res
-    .status(200)
-    .json(new apiResponse(true, 200, { user: req.user }, "User Data"));
-});
-
-const updatePassword = asyncHandler(async (req: CustomRequest, res) => {
-  const { currentPassword, newPassword, confirmNewPassword } = req.body;
-
-  if (
-    [currentPassword, newPassword, confirmNewPassword].some(
-      (field) => field.trim() === ""
-    )
-  ) {
-    return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "All Fields Must Be Field"));
+const getCurrentUser = asyncHandler(
+  async (req: CustomRequest, res: Response) => {
+    res
+      .status(200)
+      .json(new apiResponse(true, 200, { user: req.user }, "User Data"));
   }
+);
 
-  const user = await User.findById(req.user?._id);
-  if (!user)
+const updatePassword = asyncHandler(
+  async (req: CustomRequest, res: Response) => {
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+    if (
+      [currentPassword, newPassword, confirmNewPassword].some(
+        (field) => field.trim() === ""
+      )
+    ) {
+      return res
+        .status(404)
+        .json(new apiResponse(false, 404, null, "All Fields Must Be Field"));
+    }
+
+    const user = await User.findById(req.user?._id);
+    if (!user)
+      return res
+        .status(500)
+        .json(
+          new apiResponse(
+            false,
+            500,
+            "Internal Server Error Unable to fetch User Details"
+          )
+        );
+    const checkPassword = await user?.isPasswordCorrect(currentPassword);
+    if (!checkPassword) {
+      return res
+        .status(401)
+        .json(
+          new apiResponse(false, 401, null, "Current Password is Not Valid")
+        );
+    }
+
+    if (newPassword === confirmNewPassword) {
+      user.password = newPassword;
+      await user?.save({ validateBeforeSave: false });
+    } else
+      return res
+        .status(422)
+        .json(
+          new apiResponse(
+            false,
+            422,
+            null,
+            "NewPassword and ConfirmNewPassword does not match"
+          )
+        );
+
     return res
-      .status(500)
-      .json(
-        new apiResponse(
-          false,
-          500,
-          "Internal Server Error Unable to fetch User Details"
-        )
-      );
-  const checkPassword = await user?.isPasswordCorrect(currentPassword);
-  if (!checkPassword) {
-    return res
-      .status(401)
-      .json(new apiResponse(false, 401, null, "Current Password is Not Valid"));
+      .status(200)
+      .json(new apiResponse(true, 200, {}, "Password Changed SuccessFully"));
   }
+);
 
-  if (newPassword === confirmNewPassword) {
-    user.password = newPassword;
-    await user?.save({ validateBeforeSave: false });
-  } else
-    return res
-      .status(422)
-      .json(
-        new apiResponse(
-          false,
-          422,
-          null,
-          "NewPassword and ConfirmNewPassword does not match"
-        )
-      );
-
-  return res
-    .status(200)
-    .json(new apiResponse(true, 200, {}, "Password Changed SuccessFully"));
-});
-
-const deleteUser = asyncHandler(async (req: CustomRequest, res) => {
+const deleteUser = asyncHandler(async (req: CustomRequest, res: Response) => {
   const { password } = req.body;
 
   if (!password) {
@@ -290,72 +297,74 @@ const deleteUser = asyncHandler(async (req: CustomRequest, res) => {
     .json(new apiResponse(true, 200, null, "User deleted SuccessFully"));
 });
 
-const updateUserDetails = asyncHandler(async (req: CustomRequest, res) => {
-  const {
-    email,
-    mobileNumber,
-    address,
-    pincode,
-    country,
-    state,
-    dob,
-    fullName,
-    gender,
-  } = req.body;
-  const user = await User.findById(req.user?._id);
-  if (!user)
+const updateUserDetails = asyncHandler(
+  async (req: CustomRequest, res: Response) => {
+    const {
+      email,
+      mobileNumber,
+      address,
+      pincode,
+      country,
+      state,
+      dob,
+      fullName,
+      gender,
+    } = req.body;
+    const user = await User.findById(req.user?._id);
+    if (!user)
+      return res
+        .status(404)
+        .json(new apiResponse(false, 404, null, "User Not Found "));
+    if (email && email.trim().length != 0) {
+      user.email = email;
+    }
+
+    if (mobileNumber) {
+      user.mobileNumber = mobileNumber;
+    }
+
+    if (
+      address &&
+      pincode &&
+      country &&
+      state &&
+      [address, pincode, country, state].some((field) => field?.trim() !== "")
+    ) {
+      user.address = address;
+      user.pincode = pincode;
+      user.country = country;
+      user.state = state;
+    }
+
+    if (dob && dob.trim().length != 0) {
+      user.dob = dob;
+    }
+    if (fullName && fullName.trim().length != 0) {
+      user.fullName = fullName;
+    }
+
+    if (gender && gender.trim().length !== 0) {
+      user.gender = gender;
+    }
+
+    const updatedUser = await user.save();
+    updatedUser.password = "";
+    updatedUser.refreshToken = "";
     return res
-      .status(404)
-      .json(new apiResponse(false, 404, null, "User Not Found "));
-  if (email && email.trim().length != 0) {
-    user.email = email;
+      .status(200)
+      .json(
+        new apiResponse(
+          true,
+          200,
+          updatedUser,
+          "User Details Updated SuccessFully"
+        )
+      );
   }
-
-  if (mobileNumber) {
-    user.mobileNumber = mobileNumber;
-  }
-
-  if (
-    address &&
-    pincode &&
-    country &&
-    state &&
-    [address, pincode, country, state].some((field) => field?.trim() !== "")
-  ) {
-    user.address = address;
-    user.pincode = pincode;
-    user.country = country;
-    user.state = state;
-  }
-
-  if (dob && dob.trim().length != 0) {
-    user.dob = dob;
-  }
-  if (fullName && fullName.trim().length != 0) {
-    user.fullName = fullName;
-  }
-
-  if (gender && gender.trim().length !== 0) {
-    user.gender = gender;
-  }
-
-  const updatedUser = await user.save();
-  updatedUser.password = "";
-  updatedUser.refreshToken = "";
-  return res
-    .status(200)
-    .json(
-      new apiResponse(
-        true,
-        200,
-        updatedUser,
-        "User Details Updated SuccessFully"
-      )
-    );
-});
+);
 
 //accessed only by admin
-const updateRole = asyncHandler(async (req, res) => {
+const updateRole = asyncHandler(async (req: Request, res: Response) => {
   const { role, userId } = req.body;
 
   if (!role || !userId)
@@ -391,7 +400,7 @@ const updateRole = asyncHandler(async (req, res) => {
     .status(200)
     .json(new apiResponse(true, 200, {}, "Role Updated SuccessFully"));
 });
-const getAllUsers = asyncHandler(async (req, res) => {
+const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const limit = Number(process.env.PAGE_LIMIT);
   const page = parseInt(req.params.page);
   const users = await User.find()
