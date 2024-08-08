@@ -1,4 +1,4 @@
-import express, { urlencoded } from "express";
+import express, { Request, Response, urlencoded } from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -9,7 +9,7 @@ dotenv.config();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["https://jh-store-client.vercel.app/"],
     methods: ["POST", "GET", "PUT", "DELETE"],
 
     credentials: true,
@@ -32,7 +32,9 @@ import { orderRouter } from "./routes/order.routes.js";
 //fakeProduct(50).then(() => console.log("dataadded"));
 //import { fakeCategory } from "./utils/fakeData.js";
 //fakeCategory(5).then(() => console.log("Done Fake Category"));
-
+app.use("/", (req: Request, res: Response) => {
+  return res.send("Welcome to JH Store API");
+});
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/coupon", couponRouter);
