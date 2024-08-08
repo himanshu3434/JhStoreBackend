@@ -1,9 +1,10 @@
 import express, { urlencoded } from "express";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 import cors from "cors";
 import Stripe from "stripe";
 const app = express();
-
+dotenv.config();
 //necessary middlewares
 app.use(cookieParser());
 app.use(
