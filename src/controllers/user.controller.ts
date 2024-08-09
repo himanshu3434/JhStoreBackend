@@ -4,7 +4,10 @@ import { User } from "../models/user.model.js";
 import { Types } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { CustomRequest, Iuser } from "../types/types.js";
-import { cookieOptions } from "../constants.js";
+import {
+  accessTokencookieOptions,
+  refreshTokencookieOptions,
+} from "../constants.js";
 import { Request, Response } from "express";
 
 const generateAccessAndRefreshTokesn = async (userId: Types.ObjectId) => {
@@ -107,8 +110,8 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, cookieOptions)
-    .cookie("refreshToken", refreshToken, cookieOptions)
+    .cookie("accessToken", accessToken, accessTokencookieOptions)
+    .cookie("refreshToken", refreshToken, refreshTokencookieOptions)
     .json(
       new apiResponse(
         true,
@@ -147,8 +150,8 @@ const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .status(200)
-    .cookie("accessToken", accessToken, cookieOptions)
-    .cookie("refreshToken", refreshToken, cookieOptions)
+    .cookie("accessToken", accessToken, accessTokencookieOptions)
+    .cookie("refreshToken", refreshToken, refreshTokencookieOptions)
     .json(
       new apiResponse(
         true,
@@ -175,8 +178,8 @@ const logoutUser = asyncHandler(async (req: CustomRequest, res: Response) => {
 
   return res
     .status(200)
-    .clearCookie("accessToken", cookieOptions)
-    .clearCookie("refreshToken", cookieOptions)
+    .clearCookie("accessToken", accessTokencookieOptions)
+    .clearCookie("refreshToken", refreshTokencookieOptions)
     .json(
       new apiResponse(
         true,
@@ -292,8 +295,8 @@ const deleteUser = asyncHandler(async (req: CustomRequest, res: Response) => {
 
   return res
     .status(200)
-    .clearCookie("accessToken", cookieOptions)
-    .clearCookie("refreshToken", cookieOptions)
+    .clearCookie("accessToken", accessTokencookieOptions)
+    .clearCookie("refreshToken", refreshTokencookieOptions)
     .json(new apiResponse(true, 200, null, "User deleted SuccessFully"));
 });
 
