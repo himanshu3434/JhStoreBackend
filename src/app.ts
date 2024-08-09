@@ -32,7 +32,7 @@ import { orderRouter } from "./routes/order.routes.js";
 //fakeProduct(50).then(() => console.log("dataadded"));
 //import { fakeCategory } from "./utils/fakeData.js";
 //fakeCategory(5).then(() => console.log("Done Fake Category"));
-app.use("/", (req: Request, res: Response) => {
+app.use("/api/v1/test", (req: Request, res: Response) => {
   return res.send("Welcome to JH Store API");
 });
 app.use("/api/v1/user", userRouter);
