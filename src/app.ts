@@ -9,12 +9,13 @@ dotenv.config();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://jhstore.vercel.app"],
+    origin: process.env.CORS_ORIGIN,
     methods: ["POST", "GET", "PUT", "DELETE"],
 
     credentials: true,
   })
 );
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
