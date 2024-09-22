@@ -7,9 +7,10 @@ const app = express();
 dotenv.config();
 //necessary middlewares
 app.use(cookieParser());
+console.log("  this is cors origin ", process.env.CORS_ORIGIN);
 app.use(
   cors({
-    origin: [process.env.CORS_ORIGIN || ""],
+    origin: process.env.CORS_ORIGIN,
     methods: ["POST", "GET", "PUT", "DELETE"],
 
     credentials: true,
