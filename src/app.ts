@@ -9,7 +9,7 @@ dotenv.config();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://jh-store-client.vercel.app",
+    origin: ["http://localhost:5173", "https://jhstore.vercel.app"],
     methods: ["POST", "GET", "PUT", "DELETE"],
 
     credentials: true,
@@ -42,4 +42,15 @@ app.use("/api/v1/category", categoryRouter);
 app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/order", orderRouter);
+
+setInterval(async () => {
+  console.log(" calling ping ");
+  try {
+    const response = await fetch(process.env.PING_URL || "");
+    const data = await response.text();
+    console.log("response  ", data);
+  } catch (e) {
+    console.log("error in ping ", e);
+  }
+}, 840000);
 export { app };
